@@ -1,0 +1,8 @@
+spring:
+  banner:
+    location: logo-app
+    charset: UTF-8
+  profiles:
+    active: default
+
+
