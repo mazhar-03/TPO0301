@@ -1,9 +1,9 @@
 package org.example.tpo2;
 
 public class Entry {
-    private String polish;
-    private String english;
-    private String german;
+    private final String polish;
+    private final String english;
+    private final String german;
 
     public Entry(String polish, String english, String german) {
         this.polish = polish;

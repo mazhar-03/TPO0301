@@ -1,7 +1,5 @@
 package org.example.tpo2;
 
-import org.example.tpo2.Entry;
-import org.example.tpo2.EntryRepository;
 import org.example.tpo2.profiles.IWordDisplayService;
 import org.springframework.stereotype.Controller;
 
