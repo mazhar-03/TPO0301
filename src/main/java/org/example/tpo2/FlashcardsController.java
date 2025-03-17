@@ -1,22 +1,26 @@
 package org.example.tpo2;
 
 import org.example.tpo2.profiles.IWordDisplayService;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-@Controller
+@Service
 public class FlashcardsController {
 
     private final EntryRepository entryRepository;
-    private final IWordDisplayService IWordDisplayService;
+    private final FileService fileService;
+    private final IWordDisplayService iWordDisplayService;
     private final Scanner scanner = new Scanner(System.in);
 
-    public FlashcardsController(EntryRepository entryRepository, IWordDisplayService IWordDisplayService) {
+    @Autowired
+    public FlashcardsController(EntryRepository entryRepository, FileService fileService,IWordDisplayService IWordDisplayService) {
         this.entryRepository = entryRepository;
-        this.IWordDisplayService = IWordDisplayService;
+        this.fileService = fileService;
+        this.iWordDisplayService = IWordDisplayService;
     }
 
     public void showMenu() {
@@ -29,7 +33,7 @@ public class FlashcardsController {
             System.out.print("Choose an option: ");
 
             int choice = scanner.nextInt();
-            scanner.nextLine();  // Consume newline
+            scanner.nextLine();  
 
             switch (choice) {
                 case 1 -> addNewWord();
@@ -52,23 +56,26 @@ public class FlashcardsController {
         System.out.print("Enter German translation: ");
         String german = scanner.nextLine();
 
-        entryRepository.addEntry(new Entry(polish, english, german));
-        System.out.println("✅ Word added successfully!");
+        Entry newEntry = new Entry(polish, english, german);
+        entryRepository.addEntry(newEntry);
+        //writing to the file also
+        fileService.addEntryToFile(newEntry);
+        System.out.println("Word added successfully!");
     }
 
     private void showAllWords() {
         List<Entry> entries = entryRepository.getAllEntries();
         if (entries.isEmpty()) {
-            System.out.println("⚠ No words available.");
+            System.out.println("No words available.");
         } else {
-            IWordDisplayService.displayWords(entries);
+            iWordDisplayService.displayWords(entries);
         }
     }
 
     private void startQuiz() {
         List<Entry> entries = entryRepository.getAllEntries();
         if (entries.isEmpty()) {
-            System.out.println("⚠ No words available for the quiz.");
+            System.out.println("No words available for the quiz.");
             return;
         }
 
@@ -82,9 +89,9 @@ public class FlashcardsController {
         String gerAnswer = scanner.nextLine();
 
         if (entry.getEnglish().equalsIgnoreCase(engAnswer) && entry.getGerman().equalsIgnoreCase(gerAnswer)) {
-            System.out.println("✅ Correct!");
+            System.out.println("Correct!");
         } else {
-            System.out.println("❌ Incorrect! The correct translation is: " + entry.getEnglish() + " - " + entry.getGerman());
+            System.out.println("Incorrect! The correct translation is: " + entry.getEnglish() + " - " + entry.getGerman());
         }
     }
 }
