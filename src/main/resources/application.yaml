@@ -5,4 +5,17 @@ spring:
   profiles:
     active: default
 
-
+  h2:
+    console:
+      path: /my-h2-console
+      enabled: true
+  datasource:
+    url: jdbc:h2:file:./db/words;DATABASE_TO_UPPER=false
+    username: mazo
+    password: test
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
