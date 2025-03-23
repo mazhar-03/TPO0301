@@ -11,11 +11,10 @@ import java.util.List;
 public class LowercaseWordDisplay implements IWordDisplayService {
     @Override
     public void displayWords(List<Entry> entries) {
-        System.out.println("\n=== Dictionary Entries (lowercase) ===");
+        System.out.println("\nlowercase word display");
         entries.forEach(entry ->
                 System.out.println(entry.getPolish().toLowerCase() + " - " +
                         entry.getEnglish().toLowerCase() + " - " +
                         entry.getGerman().toLowerCase()));
     }
 }
-

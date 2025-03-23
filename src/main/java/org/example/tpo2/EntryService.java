@@ -2,48 +2,20 @@ package org.example.tpo2;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.parser.Parser;
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class FileService {
+public class EntryService {
 
     private final EntryRepository entryRepository;
 
-//    @Value("${pl.edu.pja.tpo02.filename}")
-//    private String filename;
-
     @Autowired
-    public FileService(EntryRepository entryRepository) {
+    public EntryService(EntryRepository entryRepository) {
         this.entryRepository = entryRepository;
     }
-
-
-//    public void addEntryToFile(Entry entry) {
-//        try {
-//            Path filePath = Path.of(filename);
-//            if (!Files.exists(filePath))
-//                Files.createFile(filePath);
-//
-//            String entryLine = entry.getId() + "," + entry.getPolish() + "," + entry.getEnglish() + ',' + entry.getGerman() + "\n";
-//            Files.write(filePath, entryLine.getBytes(), StandardOpenOption.APPEND);
-//            System.out.println("Word saved to file successfully!");
-//        } catch (IOException e) {
-//            System.out.println("Error saving word to file: " + e.getMessage());
-//        }
-//    }
 
     @Transactional
     public void loadInitialDataIfEmpty() {
@@ -57,13 +29,12 @@ public class FileService {
         }
     }
 
-
     public Entry searchWord(String word) {
         return getAllWords().stream()
                 .filter(e ->
-                        e.getPolish().equals(word) ||
-                        e.getEnglish().equals(word) ||
-                        e.getGerman().equals(word))
+                        e.getPolish().equalsIgnoreCase(word) ||
+                                e.getEnglish().equalsIgnoreCase(word) ||
+                                e.getGerman().equalsIgnoreCase(word))
                 .findFirst()
                 .orElse(null);
     }
@@ -79,7 +50,7 @@ public class FileService {
     }
 
     private String getFieldValue(Entry entry, String field) {
-        return switch (field){
+        return switch (field) {
             case "polish" -> entry.getPolish();
             case "english" -> entry.getEnglish();
             case "german" -> entry.getGerman();
@@ -87,44 +58,43 @@ public class FileService {
         };
     }
 
+    public void addEntry(Entry entry) {
+        entryRepository.addEntry(entry);
+    }
+
     public void deleteEntry(Long id) {
         entryRepository.deleteById(id);
     }
 
-//    public void modifyEntryInFile(Long id, String newPolish, String newEnglish, String newGerman) {
-//        List<Entry> entries = entryRepository.allEntries(); // read all current entries
-//        boolean updated = false;
-//
-//        for (Entry e : entries) {
-//            if (e.getId().equals(id)) {
-//                e.setPolish(newPolish);
-//                e.setEnglish(newEnglish);
-//                e.setGerman(newGerman);
-//                updated = true;
-//                break;
-//            }
-//        }
-//
-//        if (updated) {
-//            writeAllEntriesToFile(entries);
-//            System.out.println("Entry updated successfully!");
-//        } else {
-//            System.out.println("No entry found with ID: " + id);
-//        }
-//    }
+    public Entry updateEntry(Entry updatedEntry) throws WordNotFoundException {
+        return entryRepository.update(updatedEntry);
+    }
 
-//    public void writeAllEntriesToFile(List<Entry> entries) {
-//        try (PrintWriter writer = new PrintWriter(new FileWriter("words.csv"))) {
-//            for (Entry e : entries) {
-//                writer.println(e.getId() + "," + e.getPolish() + "," + e.getEnglish() + "," + e.getGerman());
-//            }
-//        } catch (IOException e) {
-//            System.err.println("Error writing to file: " + e.getMessage());
-//        }
-//    }
+    public Optional<Entry> findById(Long id) {
+        return entryRepository.findById(id);
+    }
 
     public List<Entry> getAllWords() {
         return entryRepository.allEntries();
     }
 
+    public List<String> findOnlyEnglish() {
+        return entryRepository.getAllEnglishWords();
+    }
+
+    public List<String> findOnlyPolish() {
+        return entryRepository.getAllPolishWords();
+    }
+
+    public List<String> findOnlyGerman() {
+        return entryRepository.getAllGermanWords();
+    }
+
+    public long getCount() {
+        return entryRepository.countEntries();
+    }
+
+    public List<Long> getAllIds() {
+        return entryRepository.getAllIds();
+    }
 }

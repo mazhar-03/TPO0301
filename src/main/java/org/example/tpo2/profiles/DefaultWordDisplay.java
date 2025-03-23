@@ -11,7 +11,7 @@ import java.util.List;
 public class DefaultWordDisplay implements IWordDisplayService {
     @Override
     public void displayWords(List<Entry> entries) {
-        System.out.println("\n=== Dictionary Entries (Original) ===");
+        System.out.println("\nDefault Word Display");
         entries.forEach(System.out::println);
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 public class UppercaseWordDisplay implements IWordDisplayService {
     @Override
     public void displayWords(List<Entry> entries) {
-        System.out.println("\n=== Dictionary Entries (UPPERCASE) ===");
+        System.out.println("\nUPPERCASE WORD DISPLAY");
         entries.forEach(entry ->
                 System.out.println(entry.getPolish().toUpperCase() + " - " +
                         entry.getEnglish().toUpperCase() + " - " +
