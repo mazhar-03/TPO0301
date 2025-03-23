@@ -3,7 +3,7 @@ spring:
     location: logo-app
     charset: UTF-8
   profiles:
-    active: default
+    active: uppercase
 
   h2:
     console:
